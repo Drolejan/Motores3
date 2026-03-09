@@ -110,6 +110,10 @@ namespace StarterAssets
 
         private bool _hasAnimator;
 
+        //VARIABLES DE LOS EJERCICIOS
+        float targetSpeed;
+        float runStamina=500f;
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -151,6 +155,7 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
+
 
         private void Update()
         {
@@ -214,7 +219,17 @@ namespace StarterAssets
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            //float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            //EJERCICIO 1 Crear stamina para correr
+            if (_input.sprint && runStamina>0)
+            {
+                targetSpeed=SprintSpeed;
+                runStamina--;
+            }
+            else
+            {
+                targetSpeed=MoveSpeed;
+            }
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 
