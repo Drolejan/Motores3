@@ -5,10 +5,7 @@ using UnityEngine.InputSystem;
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
  */
-
-namespace StarterAssets
-{
-
+namespace StarterAssets{
     [RequireComponent(typeof(CharacterController))]
 #if ENABLE_INPUT_SYSTEM
     [RequireComponent(typeof(PlayerInput))]
@@ -115,8 +112,9 @@ namespace StarterAssets
         //float targetSpeed;
         //float runStamina=500f;
 
+        //Declaramos el script de pEstamina
+        PlayerStamina playerStamina;
         
-
         private bool IsCurrentDeviceMouse
         {
             get
@@ -137,6 +135,7 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+            playerStamina=GetComponent<PlayerStamina>();//Obtenemos el script
         }
 
         private void Start()
@@ -224,17 +223,18 @@ namespace StarterAssets
             float targetSpeed;
             //Checar si el personaje se esta moviendo
             bool isMoving = _input.move != Vector2.zero;
-            bool canSprint = _input.sprint && isMoving;
-            //bool canSprint = _input.sprint && isMoving && playerStamina != null && playerStamina.CanSprint();
+            bool canSprint = _input.sprint && isMoving && playerStamina.CanSprint();
                      
             //EJERCICIO 2 Usar un script de stamina
             if (canSprint)
             {
                 targetSpeed=SprintSpeed;
+                playerStamina.DrainStamina();
             }
             else
             {
                 targetSpeed=MoveSpeed;
+                playerStamina.RecoverStamina();
             }
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon

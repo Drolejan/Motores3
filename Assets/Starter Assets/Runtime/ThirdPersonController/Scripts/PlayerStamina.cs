@@ -8,12 +8,6 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float staminaRecovery = 0.5f;
 
     public float CurrentStamina => currentStamina;//Funcion que permite SOLO leer una variable privada
-    /*Esto es lo mismo que la propiedad de arriba pero con sintaxis más larga
-    public float CurrentStamina
-{
-    get { return currentStamina; }
-}
-    */
     public float MaxStamina => maxStamina;
 
     public bool CanSprint()
