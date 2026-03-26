@@ -9,15 +9,15 @@ public class StaminaBarUI : MonoBehaviour
     private void Start()
     {
         playerStamina = FindFirstObjectByType<PlayerStamina>();
+        //Uso de eventos: Vamos a suscribir la función Update stamina a la funcion OnStaminaChanged
+        playerStamina.OnStaminaChanged += UpdateStaminaBar;
     }
 
-    private void Update()
+    void OnDestroy()
     {
-        if (playerStamina == null || staminaFillImage == null)
-            return;
-
-        UpdateStaminaBar(playerStamina.CurrentStamina);
+        playerStamina.OnStaminaChanged -= UpdateStaminaBar;        
     }
+
 
     private void UpdateStaminaBar(float currentStamina)
     {
