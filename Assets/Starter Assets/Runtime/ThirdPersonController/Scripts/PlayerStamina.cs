@@ -31,6 +31,17 @@ public class PlayerStamina : MonoBehaviour
         NotifyStamina();
     }
 
+    public void JumpDrain()
+    {
+        currentStamina -= staminaDrain/2;
+        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+        if (currentStamina <= 0)
+        {
+            sprintLock=true;
+        }
+        NotifyStamina();
+    }
+
     public void RecoverStamina()
     {
         currentStamina += staminaRecovery * Time.deltaTime;
