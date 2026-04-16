@@ -300,75 +300,68 @@ namespace StarterAssets{
             }
         }
 
-        private void JumpAndGravity()
-        {
-            if (Grounded)
-            {
-                // reset the fall timeout timer
-                _fallTimeoutDelta = FallTimeout;
+private void JumpAndGravity()
+{
+    if (Grounded)
+    {
+        _fallTimeoutDelta = FallTimeout;
 
-                // update animator if using character
+        if (_hasAnimator)
+        {
+            _animator.SetBool(_animIDJump, false);
+            _animator.SetBool(_animIDFreeFall, false);
+        }
+
+        if (_verticalVelocity < 0.0f)
+        {
+            _verticalVelocity = -2f;
+        }
+
+        if (_input.jump && _jumpTimeoutDelta <= 0.0f)
+        {
+            if (playerStamina.CanSprint())
+            {
+                playerStamina.JumpDrain();
+                _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
-                }
-
-                // stop our velocity dropping infinitely when grounded
-                if (_verticalVelocity < 0.0f)
-                {
-                    _verticalVelocity = -2f;
-                }
-
-                // Jump
-                if (_input.jump && _jumpTimeoutDelta <= 0.0f && playerStamina.CanSprint())
-                {
-                    playerStamina.JumpDrain();
-                    // the square root of H * -2 * G = how much velocity needed to reach desired height
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDJump, true);
-                    }
-                }
-
-                // jump timeout
-                if (_jumpTimeoutDelta >= 0.0f)
-                {
-                    _jumpTimeoutDelta -= Time.deltaTime;
+                    _animator.SetBool(_animIDJump, true);
                 }
             }
-            else
+
+            _input.jump = false; // Este fue el cambio que hice para que el personaje no se quede saltando al mantener presionado el boton de salto
+        }
+
+        if (_jumpTimeoutDelta >= 0.0f)
+        {
+            _jumpTimeoutDelta -= Time.deltaTime;
+        }
+    }
+    else
+    {
+        _jumpTimeoutDelta = JumpTimeout;
+
+        if (_fallTimeoutDelta >= 0.0f)
+        {
+            _fallTimeoutDelta -= Time.deltaTime;
+        }
+        else
+        {
+            if (_hasAnimator)
             {
-                // reset the jump timeout timer
-                _jumpTimeoutDelta = JumpTimeout;
-
-                // fall timeout
-                if (_fallTimeoutDelta >= 0.0f)
-                {
-                    _fallTimeoutDelta -= Time.deltaTime;
-                }
-                else
-                {
-                    // update animator if using character
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDFreeFall, true);
-                    }
-                }
-
-                // if we are not grounded, do not jump
-                _input.jump = false;
-            }
-
-            // apply gravity over time if under terminal (multiply by delta time twice to linearly speed up over time)
-            if (_verticalVelocity < _terminalVelocity)
-            {
-                _verticalVelocity += Gravity * Time.deltaTime;
+                _animator.SetBool(_animIDFreeFall, true);
             }
         }
+
+        _input.jump = false;
+    }
+
+    if (_verticalVelocity < _terminalVelocity)
+    {
+        _verticalVelocity += Gravity * Time.deltaTime;
+    }
+}
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
         {
